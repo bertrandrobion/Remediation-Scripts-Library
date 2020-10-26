@@ -1,18 +1,21 @@
-﻿<#
+<#
 .Synopsis
-   Aternity - Remediation Script: Aternity-LaunchRecorder
+	Aternity - Remediation Script: Aternity-LaunchRecorder
 .DESCRIPTION
 	Launch Aternity Recorder
- 	
+	
 	References:
 	* https://www.aternity.com
 	* https://help.aternity.com/search?facetreset=yes&q=remediation
 
 .EXAMPLE
-   Deploy in Aternity (Configuration > Remediation > Add Action) 
-   Action Name: Aternity-LaunchRecorder
-   Description: Launch Aternity Recorder
-   Run the script in the System account: checked
+	Deploy in Aternity (Configuration > Remediation > Add Action) 
+	Action Name: Aternity-LaunchRecorder
+	Description: Launch Aternity Recorder
+	Run the script in the System account: checked
+
+.VERSION
+	v1.0 2020/10/26
 #>
 
 try
@@ -33,16 +36,17 @@ $recorderPath = "$env:STEELCENTRAL_ATERNITY_AGENT_HOME\..\Assistant\AternityReco
 if (! (Test-Path -Path $recorderPath)) {
     throw "Could not find Aternity Recorder in $recorderPath"
 }
-
-Start-Process -FilePath "$recorderPath" 
-
-
+else {
+	Start-Process -FilePath "$recorderPath" 
+	$result = "Recorder Launched"
+}
+	
 	#endregion
 
 	# Set Output message
-    [ActionExtensionsMethods.ActionExtensionsMethods]::SetScriptOutput($result)
+	[ActionExtensionsMethods.ActionExtensionsMethods]::SetScriptOutput($result)
 }
 catch
 {
-    [ActionExtensionsMethods.ActionExtensionsMethods]::SetFailed($_.Exception.Message)
+	[ActionExtensionsMethods.ActionExtensionsMethods]::SetFailed($_.Exception.Message)
 }
