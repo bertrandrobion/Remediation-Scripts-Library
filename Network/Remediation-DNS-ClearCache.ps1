@@ -12,8 +12,12 @@
    Deploy in Aternity (Configuration > Remediation > Add Action) 
    Action Name: DNS Clear Cache
    Description: Clear the device DNS Cache
-   
+ 
+.VERSION
+Date : 11/09/2020 v1.0 
 #>
+
+
 
 try
 {
@@ -22,9 +26,13 @@ try
     
 #region Remediation action logic
 
+$beforeclean = Get-dnsClientcache
+$beforecleanNumber = $beforeclean.Count
 Clear-DnsClientCache
-$result="DNS Cache Cleared"
- 
+$AfterClean = Get-dnsClientcache
+$AfterCleanNumber = $AfterClean.Count
+$result="DNS Cache Cleared from "+ $beforecleanNumber + " Objects to " + $AfterCleanNumber + "."
+
 #endregion
 
 	# Set Output message
@@ -34,3 +42,4 @@ catch
 {
     [ActionExtensionsMethods.ActionExtensionsMethods]::SetFailed($_.Exception.Message)
 }
+
