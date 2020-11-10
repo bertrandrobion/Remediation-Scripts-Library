@@ -15,6 +15,9 @@
    Action Name: Restart-WindowsSearch
    Description: Fix issues with Windows Search
    Run the script in the System account: checked
+   
+.VERSION
+	Date : 11/09/2020 version 1.0   
 #>
 
 try
@@ -24,15 +27,10 @@ try
 	
 	#region Remediation action logic
 
-		# Add your remediation code here and set the variable $result with the Output Message to be visible visible in Aternity's dashboards.
-		#
-		# For example:
-		# 	Clear-DnsClientCache
-		# 	$result="DNS Cache Cleared"
-
-Restart-Service -Name WSearch -Force -ErrorAction Stop
-$result = Get-Service WSearch | Out-String
-
+	#Restart the Wsearch service and verify if the service is up
+	Restart-Service -Name WSearch -Force -ErrorAction Stop
+	$service = Get-Service WSearch
+	$result = $service.name + " is " + $service.status
 	#endregion
 
 	# Set Output message
