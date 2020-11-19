@@ -1,37 +1,36 @@
 <#
 .Synopsis
-   Aternity - Remediation Script: Aternity-Record-UserInteraction
+	Aternity - Remediation Script: Aternity-Record-UserInteraction
 .DESCRIPTION
 	Record user interaction on the screen to troubleshoot an application and understand the interactions of the user
-    Store capture
+	Store capture
  	
 	References:
 	* https://www.aternity.com
 	* https://help.aternity.com/search?facetreset=yes&q=remediation
 
 .EXAMPLE
-   Deploy in Aternity (Configuration > Remediation > Add Action) 
-   Action Name: Record-UserInteraction
-   Description: Record user interaction on the screen to troubleshoot an application
-   Run the script in the System account: checked
-   End-User confirmation message: ON
-   Message from: IT Service Desk - Troubleshooting
-   Header: Investigation on application problem
-   Message: Please click OK to start recording and redo the operation having problem in your application (crash slowness, etc.). The screen interaction will be recorded for 2 min.
-#>
+	Deploy in Aternity (Configuration > Remediation > Add Action) 
+	Action Name: Record-UserInteraction
+	Description: Record user interaction on the screen to troubleshoot an application
+	Run the script in the System account: checked
+	End-User confirmation message: ON
+	Message from: IT Service Desk - Troubleshooting
+	Header: Investigation on application problem
+	Message: Please click OK to start recording and redo the operation having problem in your application (crash slowness, etc.). The screen interaction will be recorded for 2 min.
 
+.VERSION
+	Date : 11/19/20 V1.0
+#>
 try
 {
 	# Load Agent Module
-    Add-Type -Path $env:STEELCENTRAL_ATERNITY_AGENT_HOME\ActionExtensionsMethods.dll
+	Add-Type -Path $env:STEELCENTRAL_ATERNITY_AGENT_HOME\ActionExtensionsMethods.dll
 	
 	#region Remediation action logic
 
 		# Add your remediation code here and set the variable $result with the Output Message to be visible visible in Aternity's dashboards.
 		#
-		# For example:
-		# 	Clear-DnsClientCache
-		# 	$result="DNS Cache Cleared"
 
 # Parameters
 $duration = "2:00"
@@ -39,23 +38,23 @@ $duration = "2:00"
 # Preparation
 
 if (Get-Process ffmpeg -ErrorAction SilentlyContinue) { 
-    throw "Cannot start if ffmpeg is already running." 
+	throw "Cannot start if ffmpeg is already running." 
 }
 
 if (! $env:STEELCENTRAL_ATERNITY_AGENT_HOME) {
-    throw "Environment variable missing for Aternity Agent Path: STEELCENTRAL_ATERNITY_AGENT_HOME"
+	throw "Environment variable missing for Aternity Agent Path: STEELCENTRAL_ATERNITY_AGENT_HOME"
 }
 
 $ffmpegPath = "$env:STEELCENTRAL_ATERNITY_AGENT_HOME\..\Assistant\ffmpeg\ffmpeg.exe"
 
 if (! (Test-Path -Path $ffmpegPath)) {
-    throw "ffmpeg could not be found in $ffmpegPath"
+	throw "ffmpeg could not be found in $ffmpegPath"
 }
 
 $capturesFolderPath = "$env:ProgramData\Aternity\Recordings"
 if (! (Test-Path $capturesFolderPath)) { New-Item -ItemType Directory $capturesFolderPath }
 if (! (Test-Path -Path $capturesFolderPath)) {
-    throw "Aternity Capture folder path could not be found in $capturesFolderPath"
+	throw "Aternity Capture folder path could not be found in $capturesFolderPath"
 }
 
 $timestamp = $(Get-Date -Format "yyMMddHHmmss")
@@ -74,7 +73,7 @@ Start-Process -FilePath $ffmpegPath  -WorkingDirectory $capturesFolderPath -Argu
 -WindowStyle Hidden -Wait
 
 if (! (Test-Path -Path $capturePath)) {
-    throw "$capturePath could not be found"
+	throw "$capturePath could not be found"
 }
 
 $result = "Recorded: $capturePath"
@@ -82,9 +81,12 @@ $result = "Recorded: $capturePath"
 	#endregion
 
 	# Set Output message
-    [ActionExtensionsMethods.ActionExtensionsMethods]::SetScriptOutput($result)
+	[ActionExtensionsMethods.ActionExtensionsMethods]::SetScriptOutput($result)
 }
 catch
 {
-    [ActionExtensionsMethods.ActionExtensionsMethods]::SetFailed($_.Exception.Message)
+[ActionExtensionsMethods.ActionExtensionsMethods]::SetFailed($_.Exception.Message)
 }
+
+#EOF
+
